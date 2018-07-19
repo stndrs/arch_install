@@ -33,6 +33,10 @@ sed -i '/HOOKS\=/d' /etc/mkinitcpio.conf
 sed -i '/\#/d' /etc/mkinitcpio.conf
 echo "HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt lvm2 filesystems fsck)" >> /etc/mkinitcpio.conf
 
+# Enable multilib in pacman
+echo "[multilib]
+Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
+
 # Generate new initramfs
 mkinitcpio -p linux
 
