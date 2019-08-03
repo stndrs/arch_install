@@ -4,7 +4,7 @@ echo "Enter the disk you want to install arch linux to:"
 read DISK
 echo "Arch will be installed on ${DISK}. Hit enter to continue"
 
-timedate set-ntp true
+timedatectl set-ntp true
 
 # Disk partitioning
 # More info: https://www.rodsbooks.com/gdisk/sgdisk-walkthrough.html
