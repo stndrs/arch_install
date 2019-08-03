@@ -60,6 +60,9 @@ genfstab -U /mnt >> /mnt/etc/fstab
 # Copy setup script to new installation
 cp arch_setup.sh /mnt
 
+# Make script executable
+chmod +x arch_setup.sh
+
 # Change to root in new installation
 arch-chroot /mnt ./arch_setup.sh
 
