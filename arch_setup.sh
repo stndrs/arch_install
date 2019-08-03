@@ -76,5 +76,5 @@ passwd ${USERNAME}
 
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
-cp arch_user_setup.sh /home/${USERNAME}/
-su - ${USERNAME} /home/${USERNAME}/arch_user_setup.sh
+# cp arch_user_setup.sh /home/${USERNAME}/
+# su - ${USERNAME} /home/${USERNAME}/arch_user_setup.sh
