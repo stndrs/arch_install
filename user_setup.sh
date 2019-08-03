@@ -22,9 +22,9 @@ echo 'eval "$(rbenv init -)"' >> ~/.bashrc
 source ~/.bashrc
 
 # Install ruby and node
-rbenv install 2.4.1
-rbenv global 2.4.1
+rbenv install 2.6.3
+rbenv global 2.6.3
 
-nvm install 8.10.0
-nvm use 8.10.0 
+nvm install node
+nvm use node
 
