@@ -37,6 +37,9 @@ echo "HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encr
 echo "[multilib]
 Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
 
+# Upgrade after enabling multilib
+pacman -Syu
+
 # Generate new initramfs
 mkinitcpio -p linux
 
