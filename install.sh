@@ -57,12 +57,12 @@ pacstrap /mnt base base-devel
 # Generate fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 
-# Copy setup script to new installation
-cp arch_setup.sh /mnt
-
 # Make script executable
-chmod +x arch_setup.sh
+chmod +x setup.sh
+
+# Copy setup script to new installation
+cp setup.sh /mnt
 
 # Change to root in new installation
-arch-chroot /mnt ./arch_setup.sh
+arch-chroot /mnt ./setup.sh
 
