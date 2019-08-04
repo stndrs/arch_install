@@ -6,7 +6,7 @@ cd yay
 makepkg -si
 
 # Install aur packages
-yay -S ttf-dejavu rbenv ruby-build nvm mysql
+yay -S ttf-dejavu rbenv ruby-build nvm
 
 # Configure bash for nvm and rbenv
 echo 'source /usr/share/nvm/init-nvm.sh' >> ~/.bashrc

@@ -25,7 +25,9 @@ rm /etc/localtime
 ln -sf /usr/share/zoneinfo/Canada/Eastern /etc/localtime
 hwclock --systohc
 
-locale-gen "en_CA.UTF-8"
+# Uncomment desired locale
+sed -i 's/#en_CA.UTF/en_CA.UTF/g' /etc/locale.gen
+locale-gen
 
 echo "LANG=en_CA.UTF-8" >> /etc/locale.conf
 
@@ -46,7 +48,7 @@ echo "Set root password"
 passwd
 
 # Install essential packages
-pacman -Sy vim openssh git sudo tree intel-ucode weston gnome gnome-extra libreoffice-fresh firefox
+pacman -Sy vim openssh git sudo tree intel-ucode weston mariadb libreoffice-fresh firefox gnome gnome-tweaks
 
 # Configure mkinitcpio
 sed -i '/HOOKS\=/d' /etc/mkinitcpio.conf
