@@ -1,5 +1,25 @@
 #!/bin/bash
 
+PART=$1
+
+# Make sure the variable contains a forward slach
+if [[ ! $PART ]]
+then
+  printf "Enter the partition where the LUKS partition can be found: "
+  read -r PART
+fi
+
+printf "
+The bootloader will use the UUID for $PART as the target for decryption.
+Continue? [Y/n]: "
+
+read -r CONTINUE
+
+if [[ $CONTINUE ]] && [ "$CONTINUE" != "Y" ]
+then
+  exit 0
+fi
+
 # Initial config
 rm /etc/localtime
 ln -sf /usr/share/zoneinfo/Canada/Eastern /etc/localtime
@@ -12,21 +32,21 @@ echo "LANG=en_CA.UTF-8" >> /etc/locale.conf
 echo KEYMAP=us >> /etc/vconsole.conf
 
 # Set hostname and update hosts file
-echo 'Please enter a hostname'
+printf 'Please enter a hostname: '
 read HOSTNAME
 
-echo "${HOSTNAME}" >> /etc/hostname
+echo "$HOSTNAME" >> /etc/hostname
 
 echo "127.0.0.1  localhost" >> /etc/hosts
 echo "::1" >> /etc/hosts
-echo "127.0.0.1  Aite.local   Aite" >> /etc/hosts
+echo "127.0.0.1  $HOSTNAME.local   $HOSTNAME" >> /etc/hosts
 
 # Set root password
-echo "Root password"
+echo "Set root password"
 passwd
 
 # Install essential packages
-pacman -Sy vim openssh git sudo lightdm tree intel-ucode weston gnome gnome-extra libreoffice-fresh firefox
+pacman -Sy vim openssh git sudo tree intel-ucode weston gnome gnome-extra libreoffice-fresh firefox
 
 # Configure mkinitcpio
 sed -i '/HOOKS\=/d' /etc/mkinitcpio.conf
@@ -57,27 +77,27 @@ editor  no" >> /boot/loader/loader.conf
 touch /boot/loader/entries/arch.conf
 
 # Get the uuid of the luks partition to be loaded by the boot loader
-fs_uuid=$(blkid -o value -s UUID /dev/sda2)
+fs_uuid=$(blkid -o value -s UUID $PART)
 
 # Set up arch conf file for boot loader
 echo "title Arch Linux
 linux /vmlinuz-linux
 initrd /intel-ucode.img
 initrd /initramfs-linux.img
-options cryptdevice=UUID=${fs_uuid}:cryptvg root=/dev/cryptvg/root rw" >> /boot/loader/entries/arch.conf
+options cryptdevice=UUID=$fs_uuid:cryptvg root=/dev/cryptvg/root rw" >> /boot/loader/entries/arch.conf
 
 # Start ssh service
 systemctl enable sshd.service
 
 # Admin user creation
-echo 'Please enter a username'
-read USERNAME
+printf "Please enter a username: "
+read -r USERNAME
 
-useradd --create-home --groups wheel --shell /bin/bash ${USERNAME}
-echo "User password"
-passwd ${USERNAME}
+useradd --create-home --groups wheel --shell /bin/bash $USERNAME
+printf "User password"
+passwd $USERNAME
 
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
-# cp arch_user_setup.sh /home/${USERNAME}/
-# su - ${USERNAME} /home/${USERNAME}/arch_user_setup.sh
+cp user_setup.sh /home/$USERNAME/
+su - c "/home/$USERNAME/user_setup.sh" - $USERNAME

@@ -1,8 +1,15 @@
 #!/bin/bash
 
-echo "Enter the disk you want to install arch linux to:"
-read DISK
-echo "Arch will be installed on ${DISK}. Hit enter to continue"
+printf "Enter the disk you want to install arch linux to:"
+read -r DISK
+printf "Arch will be installed on $DISK. Continue? [Y/n]: "
+read -r CONTINUE
+
+# Stop execution if the read value is not Y or empty string
+if [[ $CONTINUE ]] && [ "$CONTINUE" != "Y" ]
+then
+  exit 0
+fi
 
 timedatectl set-ntp true
 
@@ -10,16 +17,16 @@ timedatectl set-ntp true
 # More info: https://www.rodsbooks.com/gdisk/sgdisk-walkthrough.html
 
 # Convert disk to GPT and clear disk
-sgdisk -go ${DISK}
+sgdisk -go $DISK
 
 # Create boot partition
-FIRSTSECTOR=`sgdisk -F ${DISK}`
-sgdisk -n 1:${FIRSTSECTOR}:+500M -c 1:"boot" -t 1:ef00 ${DISK}
+FIRSTSECTOR=`sgdisk -F $DISK`
+sgdisk -n 1:$FIRSTSECTOR:+500M -c 1:"boot" -t 1:ef00 $DISK
 
 # Create partition for luks
-NEXTSECTOR=`sgdisk -f ${DISK}`
-ENDSECTOR=`sgdisk -E ${DISK}`
-sgdisk -n 2:${NEXTSECTOR}:${ENDSECTOR} -c 2:"luks" -t 1:8e00 ${DISK}
+NEXTSECTOR=`sgdisk -f $DISK`
+ENDSECTOR=`sgdisk -E $DISK`
+sgdisk -n 2:$NEXTSECTOR:$ENDSECTOR -c 2:"luks" -t 2:8e00 $DISK
 
 # Set up luks
 cryptsetup luksFormat --type luks2 ${DISK}2
@@ -29,13 +36,13 @@ pvcreate /dev/mapper/cryptlvm
 vgcreate cryptvg /dev/mapper/cryptlvm
 
 # Create logical volumes for swap /root and/home
-echo "How big should the swap parition be? [n]{MG}"
-read SWAP
-lvcreate -L ${SWAP} cryptvg -n swap
+printf "How big should the swap parition be? [n]{MG}"
+read -r SWAP
+lvcreate -L $SWAP cryptvg -n swap
 
-echo "How big should the root partition be? [n]{MG}"
-read ROOT
-lvcreate -L ${ROOT} cryptvg -n root
+printf "How big should the root partition be? [n]{MG}"
+read -r ROOT
+lvcreate -L $ROOT cryptvg -n root
 lvcreate -l 100%FREE cryptvg -n home
 
 # Format partitions
@@ -64,5 +71,4 @@ chmod +x setup.sh
 cp setup.sh /mnt
 
 # Change to root in new installation
-arch-chroot /mnt ./setup.sh
-
+arch-chroot /mnt ./setup.sh "${DISK}2"
