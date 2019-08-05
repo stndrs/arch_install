@@ -91,8 +91,10 @@ initrd /intel-ucode.img
 initrd /initramfs-linux.img
 options cryptdevice=UUID=$fs_uuid:cryptvg root=/dev/cryptvg/root rw" >> /boot/loader/entries/arch.conf
 
-# Start ssh service
+# Start services
 systemctl enable sshd.service
+systemctl enable NetworkManager.service
+systemctl enable gdm.service
 
 # Admin user creation
 printf "Please enter a username: "
@@ -105,4 +107,8 @@ passwd $USERNAME
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
 cp user_setup.sh /home/$USERNAME/
-su - c "/home/$USERNAME/user_setup.sh" - $USERNAME
+
+# yay install command
+CMD="git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si"
+
+su -c "$CMD" - $USERNAME
