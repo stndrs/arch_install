@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install aur packages
-yay -S ttf-dejavu rbenv ruby-build nvm authenticator nordvpn-bin
+yay -S ttf-dejavu rbenv ruby-build nvm authenticator
 
 # Configure bash for nvm and rbenv
 echo 'source /usr/share/nvm/init-nvm.sh' >> ~/.bashrc
