@@ -11,8 +11,3 @@
 - Admin user creation
 - AUR helper setup
 - Basic dev env setup
-
-## TODO:
-- After providing disk, username, passwords, etc., make the process hands-off
-- Add other needed packages
-
