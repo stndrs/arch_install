@@ -106,9 +106,3 @@ passwd $USERNAME
 
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
-cp user_setup.sh /home/$USERNAME/
-
-# yay install command
-CMD="git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si"
-
-su -c "$CMD" - $USERNAME
