@@ -13,6 +13,12 @@ fi
 
 timedatectl set-ntp true
 
+PART1="1"
+PART2="2"
+if [[ $DISK == *"nvme"* ]]; then
+  PART1="p1"
+  PART2="p2"
+fi
 # Disk partitioning
 # More info: https://www.rodsbooks.com/gdisk/sgdisk-walkthrough.html
 
@@ -29,8 +35,8 @@ ENDSECTOR=`sgdisk -E $DISK`
 sgdisk -n 2:$NEXTSECTOR:$ENDSECTOR -c 2:"luks" -t 2:8e00 $DISK
 
 # Set up luks
-cryptsetup luksFormat --type luks2 ${DISK}2
-cryptsetup open ${DISK}2 cryptlvm
+cryptsetup luksFormat --type luks2 ${DISK}${PART2}
+cryptsetup open ${DISK}${PART2} cryptlvm
 
 pvcreate /dev/mapper/cryptlvm
 vgcreate cryptvg /dev/mapper/cryptlvm
@@ -46,7 +52,7 @@ lvcreate -L $ROOT cryptvg -n root
 lvcreate -l 100%FREE cryptvg -n home
 
 # Format partitions
-mkfs.fat -F32 ${DISK}1
+mkfs.fat -F32 ${DISK}${PART1}
 mkfs.ext4 /dev/cryptvg/root
 mkfs.ext4 /dev/cryptvg/home
 mkswap /dev/cryptvg/swap
@@ -56,7 +62,7 @@ mkdir /mnt/home
 mount /dev/cryptvg/home /mnt/home
 swapon /dev/cryptvg/swap
 mkdir /mnt/boot
-mount ${DISK}1 /mnt/boot
+mount ${DISK}${PART1} /mnt/boot
 
 # Install arch!
 pacstrap /mnt base base-devel
@@ -71,4 +77,4 @@ chmod +x setup.sh
 cp setup.sh /mnt
 
 # Change to root in new installation
-arch-chroot /mnt ./setup.sh "${DISK}2"
+arch-chroot /mnt ./setup.sh "${DISK}${PART2}"
