@@ -48,10 +48,8 @@ echo "Set root password"
 passwd
 
 # Install essential packages
-pacman -Sy vim openssh git sudo tree intel-ucode \
-           weston mariadb libreoffice-fresh gnome \
-           gnome-tweaks deja-dup gnome-podcasts \
-           gopass chrome-gnome-shell
+pacman -Sy neovim openssh git sudo tree intel-ucode \
+           gnome gnome-tweaks deja-dup gnome-podcasts
 
 # Configure mkinitcpio
 sed -i '/HOOKS\=/d' /etc/mkinitcpio.conf
