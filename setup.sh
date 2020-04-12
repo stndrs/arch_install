@@ -49,7 +49,7 @@ passwd
 
 # Install essential packages
 pacman -Sy neovim openssh git sudo tree intel-ucode \
-           gnome gnome-tweaks deja-dup gnome-podcasts
+           gnome gnome-tweaks deja-dup
 
 # Configure mkinitcpio
 sed -i '/HOOKS\=/d' /etc/mkinitcpio.conf
@@ -73,7 +73,7 @@ bootctl --path=/boot install
 rm /boot/loader/loader.conf
 touch /boot/loader/loader.conf
 
-echo "default arch
+echo "default arch.conf
 timeout 0
 editor  no" >> /boot/loader/loader.conf
 
