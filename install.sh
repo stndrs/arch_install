@@ -65,7 +65,7 @@ mkdir /mnt/boot
 mount ${DISK}${PART1} /mnt/boot
 
 # Install arch!
-pacstrap /mnt base base-devel
+pacstrap /mnt base linux linux-firmware
 
 # Generate fstab
 genfstab -U /mnt >> /mnt/etc/fstab
